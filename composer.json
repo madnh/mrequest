@@ -1,0 +1,33 @@
+{
+  "name": "madnh/mrequest",
+  "description": "cURL class for PHP",
+  "keywords": [
+    "madnh",
+    "curl",
+    "request"
+  ],
+  "homepage": "https://github.com/php-mod/curl",
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "madnh",
+      "homepage": "https://github.com/madnh"
+    }
+  ],
+  "require": {
+    "php": ">=5.3.0",
+    "ext-curl": "*"
+  },
+  "autoload": {
+    "psr-4": {
+      "MaDnh": "MaDnh"
+    }
+  },
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "https://github.com/madnh/mrequest"
+    }
+  ]
+}
