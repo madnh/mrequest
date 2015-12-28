@@ -6,7 +6,7 @@
     "curl",
     "request"
   ],
-  "homepage": "https://github.com/php-mod/curl",
+  "homepage": "https://github.com/madnh/mrequest",
   "type": "library",
   "license": "MIT",
   "authors": [
@@ -21,7 +21,7 @@
   },
   "autoload": {
     "psr-4": {
-      "MaDnh": "MaDnh"
+      "MaDnh": "MaDnh/"
     }
   },
   "repositories": [
