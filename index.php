@@ -1,5 +1,5 @@
 <?php
-require 'MaDnh\mRequest.php';
+require 'src/MaDnh/mRequest.php';
 use MaDnh\mRequest;
 
 define('CURDIR', dirname(__FILE__));
