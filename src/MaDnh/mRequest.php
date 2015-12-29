@@ -52,6 +52,41 @@ class mRequest
     }
 
     /**
+     * Get default global config
+     * @return array
+     */
+    public static function defaultConfig()
+    {
+        return array(
+            'url' => '',
+            'method' => 'GET',
+            'data' => '',
+            'cookie_send' => '',
+            'cookie_save' => '',
+            'use_cookie' => true,
+            'fail_on_error' => true,
+            'follow_location' => true,
+            'return_transfer' => true,
+            'return_header' => true,
+            'verifying_ssl' => false,
+            'use_proxy' => false,
+            'proxy' => '',
+            'is_http_proxy' => true,
+            'referer' => true,
+            'timeout' => 3600,
+            'useragent' => 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/43.0.2357.130 Safari/537.36',
+        );
+    }
+
+    /**
+     * Reset global config to default
+     */
+    public static function resetGlobal()
+    {
+        self::$_global_config = self::defaultConfig();
+    }
+
+    /**
      * Return static config
      * @return array
      */
@@ -66,9 +101,22 @@ class mRequest
      */
     public function __construct(array $config = array())
     {
-        $this->config = self::$_global_config;
+        $this->config = array_merge(array(), self::$_global_config);
         $config_result = $this->_doConfig($config);
         $this->config = $config_result['config'];
+    }
+
+    /**
+     * Reset config
+     * @param bool $fresh If true then reset to default config, else use global config
+     */
+    public function reset($fresh = false)
+    {
+        if ($fresh) {
+            $this->config = array_merge(array(), self::defaultConfig());
+        } else {
+            $this->config = array_merge(array(), self::$_global_config);
+        }
     }
 
     /**
