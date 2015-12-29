@@ -1,5 +1,6 @@
 <?php
 require 'src/MaDnh/mRequest.php';
+require 'src/MaDnh/Response.php';
 use MaDnh\mRequest;
 
 define('CURDIR', dirname(__FILE__));
@@ -12,4 +13,4 @@ $m = new mRequest(array(
 //    'cookie_save' => CURDIR.'/cookie2.txt',
 ));
 $result = $m->get('http://www.w3schools.com/');
-print_r($result);
+echo $result->response;

@@ -2,6 +2,11 @@
 namespace MaDnh;
 class mRequest
 {
+    CONST METHOD_GET = 'GET';
+    CONST METHOD_POST = 'POST';
+    CONST METHOD_PUT = 'PUT';
+    CONST METHOD_DELETE = 'DELETE';
+
     /**
      * Instance's config
      * @var array
@@ -14,7 +19,7 @@ class mRequest
      */
     protected static $_global_config = array(
         'url' => '',
-        'request_type' => 'GET',
+        'method' => 'GET',
         'data' => '',
         'cookie_send' => '',
         'cookie_save' => '',
@@ -140,79 +145,50 @@ class mRequest
                 curl_setopt($curl_instance, CURLOPT_COOKIEJAR, $config['cookie_save']);
             }
         }
+
         return array(
             'ch' => $curl_instance,
             'config' => $config
         );
     }
 
+    /**
+     * Do Request
+     * @param $ch
+     * @param $config
+     * @return Response
+     * @throws \Exception
+     */
     protected function _doRequest($ch, $config)
     {
-        $result = array(
-            'request' => $config,
-            'header' => '',
-            'response' => '',
-            'error' => false,
-            'start' => 0,
-            'end' => 0
-        );
-
-
+        $result = new Response();
         if (empty($config['url'])) {
             throw new \Exception('URL is invalid');
         }
         $url = $config['url'];
+        curl_setopt($ch, CURLOPT_URL, $url);
 
-        if (strtoupper($config['request_type']) == 'GET') {
-            if (empty($this->config['url'])) {
-                $this->config['url'] = $url;
-            }
-            if (!empty($config['data'])) {
-                if (is_string($config['data'])) {
-                    if ($config['data'][0] != '?') {
-                        $url .= '?';
-                    }
-                    $url .= $config['data'];
-
-                } else {
-                    $tmp_data = array();
-                    foreach ($config['data'] as $key => $value) {
-                        $tmp_data[] = $key . '=' . urlencode($value);
-                    }
-                    $url .= '?' . implode('&', $tmp_data);
-                }
-            }
-
-            curl_setopt($ch, CURLOPT_URL, $url);
-            curl_setopt($ch, CURLOPT_HTTPGET, true);
-        } else if (strtoupper($config['request_type']) == 'POST') {
-            curl_setopt($ch, CURLOPT_URL, $url);
-            curl_setopt($ch, CURLOPT_POST, true);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, $config['data']);
-
-
-        }
-
-
-        $result['start'] = time();
+        $result->start = time();
         $response = curl_exec($ch);
-        $result['end'] = time();
+        $result->end = time();
         if ($response === false) {
-            $result['error']['no'] = curl_errno($ch);
-            $result['error']['message'] = curl_error($ch);
+            $result->error = array(
+                'code' => curl_errno($ch),
+                'message' => curl_error($ch)
+            );
         }
         curl_close($ch);
-        if ($result['error'] === false && $config['return_transfer']) {
+        if ($result->error === false && $config['return_transfer']) {
             if ($config['return_header']) {
                 $header_end_pos = strpos($response, "\r\n\r\n");
                 if ($header_end_pos !== false) {
-                    $result['header'] = ltrim(substr($response, 0, $header_end_pos));
-                    $result['response'] = substr($response, $header_end_pos + 4);
+                    $result->headers = ltrim(substr($response, 0, $header_end_pos));
+                    $result->response = substr($response, $header_end_pos + 4);
                 } else {
-                    $result['response'] = $response;
+                    $result->response = $response;
                 }
             } else {
-                $result['response'] = $response;
+                $result->response = $response;
             }
         }
 
@@ -222,13 +198,61 @@ class mRequest
     /**
      * Execute a request with config
      * @param array $config
-     * @return array
+     * @return Response
      * @throws \Exception
      */
     public function request($config = array())
     {
         $config_result = $this->_doConfig($config);
-        return $this->_doRequest($config_result['ch'], $config_result['config']);
+        $ch = $config_result['ch'];
+        $config = $config_result['config'];
+        if (empty($config['method'])) {
+            $config['method'] = 'GET';
+        }
+        $config['method'] = strtoupper($config['method']);
+        switch ($config['method']) {
+            case 'GET':
+            case 'PUT':
+            case 'DELETE':
+                $config['url'] = $this->_addDataToUrl($config['url'], $config['data']);
+                if ($config['method'] !== 'GET') {
+                    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $config['method']);
+                }
+                break;
+
+            case 'POST':
+                curl_setopt($ch, CURLOPT_POST, true);
+                if (is_array($config['data']) || is_object($config['data'])) {
+                    $config['data'] = http_build_query($config['data']);
+                }
+                curl_setopt($ch, CURLOPT_POSTFIELDS, $config['data']);
+                break;
+
+            default:
+                throw new \Exception('Invalid method');
+        }
+
+        return $this->_doRequest($ch, $config);
+    }
+
+    protected function _addDataToUrl($url, $data = array())
+    {
+        if (!empty($data)) {
+            $url_query = parse_url($url, PHP_URL_QUERY);
+            if (function_exists('http_build_url')) {
+                $url = http_build_url($url, array(
+                    'query' => implode('&', array(
+                        $url_query,
+                        http_build_query($data)
+                    ))
+                ));
+            } else {
+                $url .= empty($url_query) ? '?' : '&';
+                $url .= http_build_query($data);
+            }
+        }
+
+        return $url;
     }
 
     /**
@@ -236,30 +260,49 @@ class mRequest
      * @param $url
      * @param string|array $data
      * @param array $config
-     * @return array
+     * @return Response
      */
     public function get($url, $data = array(), array $config = array())
     {
         return $this->request(array_merge($config, array(
-            'url' => $url,
+            'method' => 'GET',
             'data' => $data,
-            'request_type' => 'GET'
+            'url' => $url
         )));
     }
 
     /**
      * Execute a POST request
      * @param string $url
-     * @param string|array $data
+     * @param string|array|object $data
      * @param array $config
-     * @return array
+     * @return Response
      */
     public function post($url, $data, array $config = array())
     {
         return $this->request(array_merge($config, array(
-            'url' => $url,
+            'method' => 'POST',
             'data' => $data,
-            'request_type' => 'POST'
+            'url' => $url
         )));
     }
+
+    public function put($url, $data = array(), array $config = array())
+    {
+        return $this->request(array_merge($config, array(
+            'method' => 'PUT',
+            'data' => $data,
+            'url' => $url
+        )));
+    }
+
+    public function delete($url, $data = array(), array $config = array())
+    {
+        return $this->request(array_merge($config, array(
+            'method' => 'DELETE',
+            'data' => $data,
+            'url' => $url
+        )));
+    }
+
 }
