@@ -1,7 +1,7 @@
 {
   "name": "madnh/mrequest",
   "description": "cURL class for PHP",
-  "version": "1.0.0",
+  "version": "1.2.0",
   "keywords": [
     "madnh",
     "curl",
