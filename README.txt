@@ -81,10 +81,7 @@ $obj = new mUrl(array(
 Thực hiện 1 request bằng method request
 -----------------------------------------------------------------
 $result = $obj->request(array(
-    'url' => 'http://myordersdev.skypatrol.com/Panel/api.php',
-    'data' => array(
-        'action' => 'customers'
-    )
+    'url' => 'http://www.w3schools.com/'
 ));
 print_r($result);
 
@@ -92,9 +89,7 @@ print_r($result);
 
 Thực hiện 1 request bằng method get
 -----------------------------------------------------------------
-$result = $m->get('http://myordersdev.skypatrol.com/Panel/api.php', array(
-    'action' => 'customers',
-));
+$result = $m->get('http://www.w3schools.com/');
 
 
 
