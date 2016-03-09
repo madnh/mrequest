@@ -117,6 +117,8 @@ class mRequest
         //Default useragent
         curl_setopt($curl_instance, CURLOPT_USERAGENT, $config['useragent']);
 
+        curl_setopt($curl_instance, CURLOPT_SSL_VERIFYPEER, $config['verifying_ssl']);
+        
         if ($config['return_header']) {
             curl_setopt($curl_instance, CURLOPT_HEADER, true);
         }
