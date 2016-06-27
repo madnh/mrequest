@@ -1,6 +1,6 @@
 <?php
 namespace MaDnh;
-class mRequest
+class Request
 {
     CONST METHOD_GET = 'GET';
     CONST METHOD_POST = 'POST';

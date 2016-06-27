@@ -1,13 +1,13 @@
 {
   "name": "madnh/mrequest",
   "description": "cURL class for PHP",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "keywords": [
     "madnh",
     "curl",
     "request"
   ],
-  "homepage": "https://github.com/madnh/mrequest",
+  "homepage": "https://github.com/madnh/request",
   "type": "library",
   "license": "MIT",
   "authors": [
@@ -28,7 +28,7 @@
   "repositories": [
     {
       "type": "vcs",
-      "url": "https://github.com/madnh/mrequest"
+      "url": "https://github.com/madnh/request"
     }
   ]
 }
