@@ -50,16 +50,24 @@ Request::globalConfig('cookie_save', __DIR__.'/cookie.txt');
 
 # How to use
 
-```
-<Setup Global config, if need>
-<Create new instance, which config if need>
-<Setup instance config>
-<Make request, requets may include config if need>
-```
+1. Setup global config, if need
+2. Create new instance, which config if need
+3. Setup instance config
+4. Make request, requets may include config if need
+
 ## Config methods
 - globalConfig(config_name: string or array of configs, [value = null])
 - getGlobalConfig()
 - getConfig(): export config
+
+## Request Methods
+- request(config)
+- get(url, [data, [config])
+- post(url, [data, [config])
+- put(url, [data, [config])
+- delete(url, [data, [config])
+
+## Other methods
 - setHeader(headers), set request headers, return instance
 - addHeader(name, value): add a request header, return instance
 - setCookie(cookies), set request cookies, return instance
@@ -76,23 +84,12 @@ Request::globalConfig('cookie_save', __DIR__.'/cookie.txt');
     - AUTH_MODE_ANY 
     - AUTH_MODE_ANYSAFE 
 
-## Request Methods
-- request(config)
-- get(url, [data, [config])
-- post(url, [data, [config])
-- put(url, [data, [config])
-- delete(url, [data, [config])
-
 # Examples
 Create new instance
 ```php
 $obj = new Request(array(
     'timeout' => 10
 ));
-```
-
-Make request
-```php
 $result = $obj->request(array(
     'url' => 'http://www.w3schools.com/'
 ));
@@ -101,7 +98,14 @@ print_r($result);
 
 Make another request
 ```php
-$result = $m->get('http://www.w3schools.com/');
+$result = Request::url($_SERVER['HTTP_HOST'] . '/test/target.php')
+        ->addData('name', 'Tom')
+        ->addData('old', 16)
+        ->setCookie(array(
+            'is_admin' => true
+        ))
+        ->ajaxRequest()
+        ->post();
 ```
 
 
