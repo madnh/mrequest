@@ -47,6 +47,14 @@ Request::globalConfig('cookie_save', __DIR__.'/cookie.txt');
 - start: UNIX timestamp when request start
 - end: UNIX timestamp when request complete
 
+# Constant
+
+- AUTH_MODE_BASIC
+- AUTH_MODE_DIGEST
+- AUTH_MODE_GSSNEGOTIATE
+- AUTH_MODE_NTLM
+- AUTH_MODE_ANY
+- AUTH_MODE_ANYSAFE
 
 # How to use
 
