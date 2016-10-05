@@ -1,6 +1,5 @@
 <?php
-namespace MaDnh;
-
+namespace MaDnh\Request;
 
 class Response
 {

@@ -1,5 +1,6 @@
 <?php
-namespace MaDnh;
+namespace MaDnh\Request;
+
 class Request
 {
     const AUTH_MODE_BASIC = CURLAUTH_BASIC;

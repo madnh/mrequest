@@ -1,10 +1,8 @@
 <?php
-require '../src/MaDnh/Request.php';
-require '../src/MaDnh/Response.php';
+require '../src/MaDnh/Request/Request.php';
+require '../src/MaDnh/Request/Response.php';
 
-use MaDnh\Request;
-
-$response = Request::url($_SERVER['HTTP_HOST'] . '/test/target.php')
+$response = MaDnh\Request\Request::url($_SERVER['HTTP_HOST'] . '/test/target.php')
     ->addCookie('is_admin', 'false')
     ->ajaxRequest()
     ->get(array(
