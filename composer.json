@@ -21,8 +21,8 @@
     "ext-curl": "*"
   },
   "autoload": {
-    "psr-4": {
-      "MaDnh\\": "src/"
+    "psr-0": {
+      "MaDnh\\Request": "src/"
     }
   },
   "repositories": [
